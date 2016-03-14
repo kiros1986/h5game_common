@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>加密转换</title>
+    <style>
+        .WSt {
+            margin-left: 27px;
+        }
+
+        .WStxt {
+            border: 1px solid #c5e2f2;
+            width: 800px;
+            height: 150px;
+            overflow: visible;
+        }
+
+        input, textarea, select, button {
+            vertical-align: middle;
+        }
+
+        .WSt1 {
+            margin-left: 22px;
+            margin-top: 2px;
+        }
+
+        .but2 {
+            border: 1px solid #c5e2f2;
+            background: #cde4f2 repeat-x 50% top;
+            height: 30px;
+            margin-left: 5px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            width: 90px;
+        }
+    </style>
+    <script>
+        function getName() {
+            return "_" + Math.random().toString(36).substr(2);
+        }
+
+        function compile(code) {
+            var c = [];
+            c.push(String.fromCharCode(code.charCodeAt(0) + code.length));
+            for (var i = 1; i < code.length; i++) {
+                c.push(String.fromCharCode(code.charCodeAt(i) + code.charCodeAt(i - 1)));
+            }
+            return escape(c.join(''));
+        }
+
+        function uncompile(a) {
+            a = unescape(a);
+            var c = [];
+            c.push(String.fromCharCode(a.charCodeAt(0) - a.length));
+            for (var i = 1; i < a.length; i++) {
+                c.push(String.fromCharCode(a.charCodeAt(i) - c[i - 1].charCodeAt(0)));
+            }
+            return c.join('');
+        }
+        var rename = getName();
+        //        var funcName = getName();
+        var strName = getName();
+        eval('var ' + rename + '=uncompile');
+
+        function encode() {
+            var value = document.getElementById('content').value;
+            if (value == '') {
+//                alert('文本框中没有代码！');
+                return;
+            }
+            document.getElementById('result').value = uncompile.toString().replace('uncompile', rename) + '\n'
+                    + 'var ' + strName + '=' + rename + '("' + compile(value) + '");\n' +
+                    'Function("self",' + strName + ')(需要传入的对象);';
+            document.getElementById('content').focus();
+        }
+//        console.log("%c 任玩小游戏 %c Copyright \xa9 2009-%s ",'font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:64px;color:#00bbee;-webkit-text-fill-color:#00bbee;-webkit-text-stroke: 1px #00bbee;',"font-size:12px;color:#999999;",(new Date).getFullYear())
+
+        //Unicode 转换 ASCII
+        function decode() {
+            var value = document.getElementById('content').value;
+            if (value == null) {
+//                alert('文本框中没有合法的Unicode代码！');
+                document.getElementById('content').focus();
+                return;
+            }
+            var index = value.indexOf('function');
+            var lastIndex = null;
+            if (index != -1) {
+                index += 9;
+                lastIndex = value.indexOf('(');
+                var funName = value.substr(index, lastIndex - index);
+                index = value.lastIndexOf(funName) + funName.length + 2;
+            } else {
+                index = value.indexOf('("') + 2;
+            }
+            console.log(index + "index" + value.lastIndexOf('")'));
+            value = value.substr(index, value.lastIndexOf('")') - index);
+            console.log(value)
+
+            document.getElementById('result').value = uncompile(value);
+            document.getElementById('content').focus();
+        }
+
+        function more() {
+            var value = document.getElementById('content').value;
+            var index = value.indexOf('go_home');
+            if (index != -1) {
+                document.getElementById('content').focus();
+                return;
+            }
+
+            function go_home() {
+                if (location.href.indexOf("appgame.com") == -1 &&
+                        location.href.indexOf("33xyx.com") == -1 &&
+                        location.href.indexOf("localhost") == -1 &&
+                        location.href.indexOf("127") == -1 &&
+                        location.href.indexOf("192") == -1) {
+                    location.href = "http://h5.appgame.com/";
+                }
+            };
+
+            var judgeStr = go_home.toString() + "\ngo_home();\n";
+            document.getElementById('content').value = judgeStr + document.getElementById('content').value;
+
+            encode();
+        }
+
+    </script>
+</head>
+<body>
+<form method="post">
+    <div class="WSt">
+        <textarea id="content" placeholder="内容粘贴在这里" name="content" class="WStxt" rows="20"
+                  cols="20"></textarea>
+    </div>
+    <div class="WSt1">
+        <input class="but2" type="button" style="width:150px;" value="加密" onclick="encode();">
+        <input class="but2" type="button" style="width:150px;" value="解密" onclick="decode();">
+
+        <input class="but2" type="button" value="添加跳转" onclick="more()">
+    </div>
+    <div class="WSt">
+        <textarea id="result" name="result" class="WStxt" rows="20" cols="20"></textarea>
+    </div>
+    <!--<div class="WSt1">-->
+    <!--<input type="button" value="预览转换代码" onclick="preview()" class="but2">-->
+    <!--</div>-->
+</form>
+</body>
+</html>

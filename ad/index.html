@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- <meta http-equiv="refresh" content="15"> -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+
+<body>
+</body>
+<script type="text/javascript">
+    (function () {
+        var _bdhmProtocol = (("https:" == document.location.protocol)
+                ? "https://" : "http://");
+        var src = _bdhmProtocol + "hm.baidu.com/h.js?38ac5f6af2266ad6aa28db4c8984eb29";
+        var div = document.createElement("div");
+        div.style.display = 'none';
+        var script = document.createElement('script');
+        script.src = src;
+        script.type = 'text/javascript';
+        div.appendChild(script);
+        script = null;
+        document.body.appendChild(div);
+        div = null;
+    })();
+    var getUrlParam = function (key) {
+        var reg = new RegExp("(^|\\?|&)" + key + "=([^&]*)(\\s|&|$)", "i");
+        if (reg.test(location.href)) return decodeURI(RegExp.$2.replace(/\+/g, " "));
+        return "";
+    };
+    window.location.href = getUrlParam("url") || "http://h5.appgame.com/";
+    //window.location.href = "http://h5.appgame.com/";
+</script>
+
+</html>
+
